@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import useTimerStore from './timerStore';
+import useCharacterStore from './characterStore';
 
 export interface Quest {
   id: string;
@@ -8,13 +8,17 @@ export interface Quest {
   completedPomodoros: number;
   totalPomodoros: number;
   duration: number; // in minutes
+  goldReward?: number;
 }
 
 interface QuestState {
   quests: Quest[];
+  finishedQuests: Quest[];
   activeQuestId: string | null;
   nextId: number;
-  addQuest: (quest: Omit<Quest, 'id' | 'completedPomodoros' | 'totalPomodoros'>) => void;
+  addQuest: (
+    quest: Omit<Quest, 'id' | 'completedPomodoros' | 'totalPomodoros'>
+  ) => void;
   editQuest: (quest: Quest) => void;
   deleteQuest: (id: string) => void;
   incrementPomodoro: (id: string) => void;
@@ -25,6 +29,7 @@ interface QuestState {
 
 const useQuestStore = create<QuestState>((set) => ({
   quests: [],
+  finishedQuests: [],
   activeQuestId: null,
   nextId: 1,
   addQuest: (quest) =>
@@ -68,13 +73,24 @@ const useQuestStore = create<QuestState>((set) => ({
       })),
     })),
   markAsFinished: (id) =>
-    set((state) => ({
-      quests: state.quests.map((quest) =>
-        quest.id === id
-          ? { ...quest, completedPomodoros: quest.totalPomodoros }
-          : quest
-      ),
-    })),
+    set((state) => {
+      const questToFinish = state.quests.find((q) => q.id === id);
+      if (!questToFinish) return {};
+
+      const goldReward = questToFinish.duration * 2;
+      useCharacterStore.getState().gainGold(goldReward);
+
+      const finishedQuest = {
+        ...questToFinish,
+        completedPomodoros: questToFinish.totalPomodoros,
+        goldReward,
+      };
+
+      return {
+        quests: state.quests.filter((q) => q.id !== id),
+        finishedQuests: [finishedQuest, ...state.finishedQuests],
+      };
+    }),
 }));
 
 export default useQuestStore;

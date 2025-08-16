@@ -18,6 +18,7 @@ function TabNavigator({ theme }: { theme: any }) {
   return (
     <Tab.Navigator
       screenOptions={{
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: theme.colors.secondary,
         },

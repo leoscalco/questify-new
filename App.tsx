@@ -6,7 +6,10 @@ import { Text } from 'react-native';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    MedievalSharp: require('./src/assets/fonts/MedievalSharp-Regular.ttf'),
+    'MedievalSharp-Book': require('./src/assets/fonts/medieval_sharp/MedievalSharp-Book.ttf'),
+    'MedievalSharp-Bold': require('./src/assets/fonts/medieval_sharp/MedievalSharp-Bold.ttf'),
+    'MedievalSharp-BookOblique': require('./src/assets/fonts/medieval_sharp/MedievalSharp-BookOblique.ttf'),
+    'MedievalSharp-BoldOblique': require('./src/assets/fonts/medieval_sharp/MedievalSharp-BoldOblique.ttf'),
   });
 
   useAppBlocker();

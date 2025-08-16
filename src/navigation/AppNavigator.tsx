@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import TabNavigator from './TabNavigator';
 import FocusBattleScreen from '../screens/FocusBattleScreen';
 import { useTheme } from 'styled-components/native';
+import GoldCounter from '../components/GoldCounter';
 
 const Stack = createStackNavigator();
 
@@ -21,7 +22,9 @@ function AppNavigator() {
             fontFamily: theme.fonts.main,
           },
         }}>
-        <Stack.Screen name="Main" options={{ headerShown: false }}>
+        <Stack.Screen
+          name="Main"
+          options={{ title: 'OrdinaryHero', headerRight: () => <GoldCounter /> }}>
           {() => <TabNavigator theme={theme} />}
         </Stack.Screen>
         <Stack.Screen

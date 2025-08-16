@@ -8,9 +8,12 @@ export const theme = {
     white: '#FFFFFF',
     gold: '#FFD700',
     danger: '#C53030',
+    lightGray: '#D3D3D3',
   },
   fonts: {
-    main: 'MedievalSharp',
+    main: 'MedievalSharp-Book',
+    bold: 'MedievalSharp-Bold',
+    italic: 'MedievalSharp-BookOblique',
   },
   fontSizes: {
     small: '12px',

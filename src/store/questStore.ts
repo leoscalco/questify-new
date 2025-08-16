@@ -9,6 +9,8 @@ export interface Quest {
   totalPomodoros: number;
   duration: number; // in minutes
   goldReward?: number;
+  createdAt: Date;
+  finishedAt?: Date;
 }
 
 interface QuestState {
@@ -17,7 +19,7 @@ interface QuestState {
   activeQuestId: string | null;
   nextId: number;
   addQuest: (
-    quest: Omit<Quest, 'id' | 'completedPomodoros' | 'totalPomodoros'>
+    quest: Omit<Quest, 'id' | 'completedPomodoros' | 'totalPomodoros' | 'createdAt'>
   ) => void;
   editQuest: (quest: Quest) => void;
   deleteQuest: (id: string) => void;
@@ -43,6 +45,7 @@ const useQuestStore = create<QuestState>((set) => ({
             id: state.nextId.toString(),
             completedPomodoros: 0,
             totalPomodoros: Math.ceil(quest.duration / workDuration),
+            createdAt: new Date(),
           },
         ],
         nextId: state.nextId + 1,
@@ -84,6 +87,7 @@ const useQuestStore = create<QuestState>((set) => ({
         ...questToFinish,
         completedPomodoros: questToFinish.totalPomodoros,
         goldReward,
+        finishedAt: new Date(),
       };
 
       return {

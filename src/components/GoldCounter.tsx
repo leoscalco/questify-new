@@ -10,7 +10,6 @@ const GoldCounterContainer = styled.View`
 `;
 
 const GoldText = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.white};
   margin-left: 8px;

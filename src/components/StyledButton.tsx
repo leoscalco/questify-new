@@ -9,7 +9,7 @@ const ButtonContainer = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.white};
 `;

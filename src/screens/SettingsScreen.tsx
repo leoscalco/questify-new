@@ -13,7 +13,7 @@ const SettingsContainer = styled.View`
 `;
 
 const Title = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: ${(props) => props.theme.spacing.large}px;
@@ -21,7 +21,7 @@ const Title = styled.Text`
 `;
 
 const SectionTitle = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: ${(props) => props.theme.spacing.medium}px;
@@ -39,7 +39,6 @@ const BlockedAppItem = styled.View`
 `;
 
 const BlockedAppName = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
 `;
@@ -49,14 +48,12 @@ const InputContainer = styled.View`
 `;
 
 const Label = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: ${(props) => props.theme.spacing.small}px;
 `;
 
 const Input = styled.TextInput`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
   background-color: ${(props) => props.theme.colors.white};

@@ -11,7 +11,7 @@ export const theme = {
     lightGray: '#D3D3D3',
   },
   fonts: {
-    main: 'MedievalSharp-Book',
+    title: 'MedievalSharp-Book',
     bold: 'MedievalSharp-Bold',
     italic: 'MedievalSharp-BookOblique',
   },

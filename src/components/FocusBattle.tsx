@@ -21,14 +21,13 @@ const MonsterImage = styled.Image`
 `;
 
 const Title = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.white};
   margin-bottom: ${(props) => props.theme.spacing.medium}px;
 `;
 
 const TimerText = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.xlarge};
   color: ${(props) => props.theme.colors.white};
   margin-bottom: ${(props) => props.theme.spacing.medium}px;

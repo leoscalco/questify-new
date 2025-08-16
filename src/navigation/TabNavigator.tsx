@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
+import { Image, View, StyleSheet } from 'react-native';
 import CharacterScreen from '../screens/CharacterScreen';
 import QuestsScreen from '../screens/QuestsScreen';
 import RewardsScreen from '../screens/RewardsScreen';
@@ -29,10 +29,14 @@ function TabNavigator({ theme }: { theme: any }) {
         name="Home"
         component={CharacterScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Image
               source={require('../assets/images/home-icon.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{
+                width: size,
+                height: size,
+                tintColor: focused ? theme.colors.primary : undefined,
+              }}
             />
           ),
         }}
@@ -41,10 +45,14 @@ function TabNavigator({ theme }: { theme: any }) {
         name="Quests"
         component={QuestsScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Image
               source={require('../assets/images/quest-icon.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{
+                width: size,
+                height: size,
+                tintColor: focused ? theme.colors.primary : undefined,
+              }}
             />
           ),
         }}
@@ -53,10 +61,14 @@ function TabNavigator({ theme }: { theme: any }) {
         name="Rewards"
         component={RewardsScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Image
               source={require('../assets/images/rewards-icon.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{
+                width: size,
+                height: size,
+                tintColor: focused ? theme.colors.primary : undefined,
+              }}
             />
           ),
         }}
@@ -65,10 +77,14 @@ function TabNavigator({ theme }: { theme: any }) {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Image
               source={require('../assets/images/settings-icon.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{
+                width: size,
+                height: size,
+                tintColor: focused ? theme.colors.primary : undefined,
+              }}
             />
           ),
         }}

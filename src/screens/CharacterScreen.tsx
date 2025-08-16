@@ -15,7 +15,7 @@ const CharacterImage = styled.Image`
 `;
 
 const Title = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: ${(props) => props.theme.spacing.large}px;

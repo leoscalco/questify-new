@@ -26,17 +26,20 @@ const EmptyListContainer = styled.View`
 `;
 
 const EmptyListText = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.white};
 `;
 
 const Title = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.primary};
   margin-bottom: ${(props) => props.theme.spacing.medium}px;
   text-align: center;
+`;
+
+const FinishedQuestsTitle = styled(Title)`
+  margin-top: 32px;
 `;
 
 const QuestItemContainer = styled.View<{ finished?: boolean }>`
@@ -50,6 +53,23 @@ const QuestItemContainer = styled.View<{ finished?: boolean }>`
       : props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.small}px;
   margin-bottom: ${(props) => props.theme.spacing.small}px;
+  overflow: hidden;
+`;
+
+const MonsterBackground = styled.Image`
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 100px;
+  height: 100px;
+  opacity: 0.2;
+  transform: rotate(-15deg);
+`;
+
+const FinishedMonsterBackground = styled(MonsterBackground)`
+  left: auto;
+  right: -20px;
+  transform: rotate(15deg);
 `;
 
 const QuestInfo = styled.View`
@@ -66,16 +86,26 @@ const IconButton = styled.TouchableOpacity`
 `;
 
 const QuestTitle = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
 `;
 
 const QuestProgress = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
 `;
+
+const QuestDate = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.text};
+  margin-top: 4px;
+`;
+
+const monsters = [
+  require('../assets/images/monster1.png'),
+  require('../assets/images/monster2.png'),
+  require('../assets/images/monster3.png'),
+];
 
 const QuestItem = ({
   quest,
@@ -84,6 +114,7 @@ const QuestItem = ({
   onStart,
   onFinish,
   finished,
+  index,
 }: {
   quest: Quest;
   onEdit: () => void;
@@ -91,10 +122,22 @@ const QuestItem = ({
   onStart: () => void;
   onFinish: () => void;
   finished?: boolean;
+  index: number;
 }) => (
   <QuestItemContainer finished={finished}>
+    {!finished && (
+      <MonsterBackground source={monsters[index % monsters.length]} />
+    )}
+    {finished && (
+      <FinishedMonsterBackground source={monsters[index % monsters.length]} />
+    )}
     <QuestInfo>
       <QuestTitle>{quest.title}</QuestTitle>
+      {!finished && (
+        <QuestDate>
+          Added: {new Date(quest.createdAt).toLocaleDateString()}
+        </QuestDate>
+      )}
       {!finished && (
         <QuestProgress>
           {quest.completedPomodoros}/{quest.totalPomodoros}
@@ -108,6 +151,20 @@ const QuestItem = ({
           />
           <QuestProgress>{quest.goldReward}</QuestProgress>
         </View>
+      )}
+      {finished && quest.createdAt && quest.finishedAt && (
+        <QuestDate>
+          Completed in{' '}
+          {Math.max(
+            1,
+            Math.ceil(
+              (new Date(quest.finishedAt).getTime() -
+                new Date(quest.createdAt).getTime()) /
+                (1000 * 60 * 60 * 24)
+            )
+          )}{' '}
+          day(s)
+        </QuestDate>
       )}
     </QuestInfo>
     {!finished && (
@@ -185,23 +242,24 @@ const QuestLog = () => {
         <ListContainer>
           <FlatList
             data={quests}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <QuestItem
                 quest={item}
                 onEdit={() => handleOpenModal(item)}
                 onDelete={() => handleDeleteQuest(item.id)}
                 onStart={() => handleStartBattle(item)}
                 onFinish={() => markAsFinished(item.id)}
+                index={index}
               />
             )}
             keyExtractor={(item) => item.id}
           />
         </ListContainer>
-        <Title>Finished Quests</Title>
+        <FinishedQuestsTitle>Finished Quests</FinishedQuestsTitle>
         <ListContainer>
           <FlatList
             data={finishedQuests}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <QuestItem
                 quest={item}
                 finished
@@ -209,6 +267,7 @@ const QuestLog = () => {
                 onDelete={() => {}}
                 onStart={() => {}}
                 onFinish={() => {}}
+                index={index}
               />
             )}
             keyExtractor={(item) => item.id}

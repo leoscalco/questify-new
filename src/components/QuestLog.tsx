@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
 import useQuestStore, { Quest } from '../store/questStore';
 import useTimerStore from '../store/timerStore';
 import QuestModal from './QuestModal';
@@ -83,6 +82,11 @@ const QuestActions = styled.View`
 
 const IconButton = styled.TouchableOpacity`
   padding: 8px;
+`;
+
+const IconImage = styled.Image`
+  width: 24px;
+  height: 24px;
 `;
 
 const QuestTitle = styled.Text`
@@ -170,16 +174,16 @@ const QuestItem = ({
     {!finished && (
       <QuestActions>
         <IconButton onPress={onStart}>
-          <Feather name="play" size={24} color="green" />
+          <IconImage source={require('../assets/images/gemini/play.png')} />
         </IconButton>
         <IconButton onPress={onEdit}>
-          <Feather name="edit" size={24} color="blue" />
+          <IconImage source={require('../assets/images/gemini/edit.png')} />
         </IconButton>
         <IconButton onPress={onDelete}>
-          <Feather name="trash-2" size={24} color="red" />
+          <IconImage source={require('../assets/images/gemini/delete.png')} />
         </IconButton>
         <IconButton onPress={onFinish}>
-          <Feather name="check-circle" size={24} color="green" />
+          <IconImage source={require('../assets/images/gemini/finished.png')} />
         </IconButton>
       </QuestActions>
     )}

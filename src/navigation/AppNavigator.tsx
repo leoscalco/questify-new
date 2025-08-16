@@ -19,7 +19,7 @@ function AppNavigator() {
           },
           headerTintColor: theme.colors.white,
           headerTitleStyle: {
-            fontFamily: theme.fonts.main,
+            fontFamily: theme.fonts.title,
           },
         }}>
         <Stack.Screen

@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import AppNavigator from './src/navigation/AppNavigator';
+import { ThemeProvider } from './src/styles/ThemeProvider';
+import useAppBlocker from './src/hooks/useAppBlocker';
+import { useFonts } from 'expo-font';
+import { Text } from 'react-native';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    MedievalSharp: require('./src/assets/fonts/MedievalSharp-Regular.ttf'),
+  });
+
+  useAppBlocker();
+
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider>
+      <AppNavigator />
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

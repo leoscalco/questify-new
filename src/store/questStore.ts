@@ -10,20 +10,30 @@ export interface Quest {
 
 interface QuestState {
   quests: Quest[];
+  activeQuestId: string | null;
+  nextId: number;
   addQuest: (quest: Omit<Quest, 'id' | 'completedPomodoros'>) => void;
   editQuest: (quest: Quest) => void;
   deleteQuest: (id: string) => void;
   incrementPomodoro: (id: string) => void;
+  setActiveQuest: (id: string | null) => void;
 }
 
 const useQuestStore = create<QuestState>((set) => ({
   quests: [],
+  activeQuestId: null,
+  nextId: 1,
   addQuest: (quest) =>
     set((state) => ({
       quests: [
         ...state.quests,
-        { ...quest, id: Date.now().toString(), completedPomodoros: 0 },
+        {
+          ...quest,
+          id: state.nextId.toString(),
+          completedPomodoros: 0,
+        },
       ],
+      nextId: state.nextId + 1,
     })),
   editQuest: (quest) =>
     set((state) => ({
@@ -41,6 +51,7 @@ const useQuestStore = create<QuestState>((set) => ({
           : q
       ),
     })),
+  setActiveQuest: (id) => set({ activeQuestId: id }),
 }));
 
 export default useQuestStore;

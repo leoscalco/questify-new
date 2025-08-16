@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { Image } from 'react-native';
 import styled from 'styled-components/native';
 import useTimerStore from '../store/timerStore';
+import useQuestStore from '../store/questStore';
+import useCharacterStore from '../store/characterStore';
+import StyledButton from './StyledButton';
 
 const FocusBattleContainer = styled.View`
   width: 100%;
@@ -9,6 +12,12 @@ const FocusBattleContainer = styled.View`
   background-color: ${(props) => props.theme.colors.secondary};
   border-radius: ${(props) => props.theme.borderRadius.medium}px;
   align-items: center;
+`;
+
+const MonsterImage = styled.Image`
+  width: 150px;
+  height: 150px;
+  margin-bottom: ${(props) => props.theme.spacing.medium}px;
 `;
 
 const Title = styled.Text`
@@ -25,26 +34,46 @@ const TimerText = styled.Text`
   margin-bottom: ${(props) => props.theme.spacing.medium}px;
 `;
 
+const ControlsContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+`;
+
 const FocusBattle = () => {
-  const { time, isActive, isPaused, startTime, pauseTime, resetTime, setTime } =
-    useTimerStore();
+  const {
+    time,
+    isActive,
+    isWorkSession,
+    startTime,
+    pauseTime,
+    resetTime,
+    toggleSession,
+    decrementTime,
+  } = useTimerStore();
+  const { activeQuestId, incrementPomodoro } = useQuestStore();
+  const { gainXp, gainGold } = useCharacterStore();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
 
-    if (isActive && !isPaused) {
+    if (isActive && time > 0) {
       interval = setInterval(() => {
-        setTime(time - 1);
+        decrementTime();
       }, 1000);
-    }
-
-    if (time === 0) {
-      clearInterval(interval);
-      resetTime();
+    } else if (isActive && time === 0) {
+      if (isWorkSession) {
+        if (activeQuestId) {
+          incrementPomodoro(activeQuestId);
+        }
+        gainXp(10);
+        gainGold(5);
+      }
+      toggleSession();
     }
 
     return () => clearInterval(interval);
-  }, [isActive, isPaused, time]);
+  }, [isActive, time]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -56,19 +85,17 @@ const FocusBattle = () => {
 
   return (
     <FocusBattleContainer>
-      <Title>Focus Battle</Title>
+      <Title>{isWorkSession ? 'Focus Battle' : 'Break Time'}</Title>
+      <MonsterImage source={require('../assets/images/monster1.png')} />
       <TimerText>{formatTime(time)}</TimerText>
-      {!isActive && !isPaused ? (
-        <Button title="Start" onPress={startTime} />
-      ) : (
-        <>
-          <Button
-            title={isPaused ? 'Resume' : 'Pause'}
-            onPress={isPaused ? startTime : pauseTime}
-          />
-          <Button title="Reset" onPress={resetTime} />
-        </>
-      )}
+      <ControlsContainer>
+        {!isActive ? (
+          <StyledButton title="Start" onPress={startTime} />
+        ) : (
+          <StyledButton title="Pause" onPress={pauseTime} />
+        )}
+        <StyledButton title="Reset" onPress={resetTime} />
+      </ControlsContainer>
     </FocusBattleContainer>
   );
 };

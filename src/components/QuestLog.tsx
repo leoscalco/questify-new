@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 import useQuestStore, { Quest } from '../store/questStore';
 import QuestModal from './QuestModal';
+import StyledButton from './StyledButton';
 
 const QuestLogContainer = styled.View`
   width: 100%;
@@ -29,6 +31,15 @@ const QuestItemContainer = styled.View`
   margin-bottom: ${(props) => props.theme.spacing.small}px;
 `;
 
+const QuestInfo = styled.View`
+  flex: 1;
+`;
+
+const QuestActions = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 const QuestTitle = styled.Text`
   font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
@@ -41,22 +52,68 @@ const QuestProgress = styled.Text`
   color: ${(props) => props.theme.colors.text};
 `;
 
-const QuestItem = ({ quest }: { quest: Quest }) => (
+const QuestItem = ({
+  quest,
+  onEdit,
+  onDelete,
+  onStart,
+}: {
+  quest: Quest;
+  onEdit: () => void;
+  onDelete: () => void;
+  onStart: () => void;
+}) => (
   <QuestItemContainer>
-    <QuestTitle>{quest.title}</QuestTitle>
-    <QuestProgress>
-      {quest.completedPomodoros}/{quest.totalPomodoros}
-    </QuestProgress>
+    <QuestInfo>
+      <QuestTitle>{quest.title}</QuestTitle>
+      <QuestProgress>
+        {quest.completedPomodoros}/{quest.totalPomodoros}
+      </QuestProgress>
+    </QuestInfo>
+    <QuestActions>
+      <StyledButton title="Start" onPress={onStart} />
+      <StyledButton title="Edit" onPress={onEdit} />
+      <StyledButton title="Delete" onPress={onDelete} />
+    </QuestActions>
   </QuestItemContainer>
 );
 
 const QuestLog = () => {
+  const navigation = useNavigation();
   const quests = useQuestStore((state) => state.quests);
   const addQuest = useQuestStore((state) => state.addQuest);
+  const editQuest = useQuestStore((state) => state.editQuest);
+  const deleteQuest = useQuestStore((state) => state.deleteQuest);
+  const setActiveQuest = useQuestStore((state) => state.setActiveQuest);
   const [modalVisible, setModalVisible] = useState(false);
+  const [questToEdit, setQuestToEdit] = useState<Quest | null>(null);
 
-  const handleAddQuest = (title: string, totalPomodoros: number) => {
-    addQuest({ title, totalPomodoros });
+  const handleOpenModal = (quest?: Quest) => {
+    setQuestToEdit(quest || null);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setQuestToEdit(null);
+    setModalVisible(false);
+  };
+
+  const handleSaveQuest = (title: string, totalPomodoros: number) => {
+    if (questToEdit) {
+      editQuest({ ...questToEdit, title, totalPomodoros });
+    } else {
+      addQuest({ title, totalPomodoros });
+    }
+    handleCloseModal();
+  };
+
+  const handleDeleteQuest = (id: string) => {
+    deleteQuest(id);
+  };
+
+  const handleStartBattle = (quest: Quest) => {
+    setActiveQuest(quest.id);
+    navigation.navigate('FocusBattle', { quest });
   };
 
   return (
@@ -64,14 +121,22 @@ const QuestLog = () => {
       <Title>Quest Log</Title>
       <FlatList
         data={quests}
-        renderItem={({ item }) => <QuestItem quest={item} />}
+        renderItem={({ item }) => (
+          <QuestItem
+            quest={item}
+            onEdit={() => handleOpenModal(item)}
+            onDelete={() => handleDeleteQuest(item.id)}
+            onStart={() => handleStartBattle(item)}
+          />
+        )}
         keyExtractor={(item) => item.id}
       />
-      <Button title="Add Quest" onPress={() => setModalVisible(true)} />
+      <StyledButton title="Add Quest" onPress={() => handleOpenModal()} />
       <QuestModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={handleAddQuest}
+        onClose={handleCloseModal}
+        onSubmit={handleSaveQuest}
+        questToEdit={questToEdit}
       />
     </QuestLogContainer>
   );

@@ -1,6 +1,6 @@
 {
-  "name": "PomodoroApp",
-  "displayName": "PomodoroApp",
+  "name": "OrdinaryHero",
+  "displayName": "OrdinaryHero",
   "plugins": [
     "expo-font"
   ]

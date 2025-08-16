@@ -1,6 +1,8 @@
-import React from 'react';
-import { Modal, TextInput, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal } from 'react-native';
 import styled from 'styled-components/native';
+import { Quest } from '../store/questStore';
+import StyledButton from './StyledButton';
 
 const ModalContainer = styled.View`
   flex: 1;
@@ -38,14 +40,34 @@ interface QuestModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (title: string, totalPomodoros: number) => void;
+  questToEdit?: Quest | null;
 }
 
-const QuestModal = ({ visible, onClose, onSubmit }: QuestModalProps) => {
-  const [title, setTitle] = React.useState('');
-  const [totalPomodoros, setTotalPomodoros] = React.useState('');
+const QuestModal = ({
+  visible,
+  onClose,
+  onSubmit,
+  questToEdit,
+}: QuestModalProps) => {
+  const [title, setTitle] = useState('');
+  const [totalPomodoros, setTotalPomodoros] = useState('');
+
+  useEffect(() => {
+    if (questToEdit) {
+      setTitle(questToEdit.title);
+      setTotalPomodoros(questToEdit.totalPomodoros.toString());
+    } else {
+      setTitle('');
+      setTotalPomodoros('');
+    }
+  }, [questToEdit, visible]);
 
   const handleSubmit = () => {
     onSubmit(title, parseInt(totalPomodoros, 10));
+    onClose();
+  };
+
+  const handleClose = () => {
     setTitle('');
     setTotalPomodoros('');
     onClose();
@@ -55,7 +77,7 @@ const QuestModal = ({ visible, onClose, onSubmit }: QuestModalProps) => {
     <Modal visible={visible} transparent>
       <ModalContainer>
         <ModalContent>
-          <Title>Add Quest</Title>
+          <Title>{questToEdit ? 'Edit Quest' : 'Add Quest'}</Title>
           <Input
             placeholder="Quest Title"
             value={title}
@@ -67,8 +89,11 @@ const QuestModal = ({ visible, onClose, onSubmit }: QuestModalProps) => {
             onChangeText={setTotalPomodoros}
             keyboardType="numeric"
           />
-          <Button title="Add" onPress={handleSubmit} />
-          <Button title="Cancel" onPress={onClose} />
+          <StyledButton
+            title={questToEdit ? 'Save' : 'Add'}
+            onPress={handleSubmit}
+          />
+          <StyledButton title="Cancel" onPress={handleClose} />
         </ModalContent>
       </ModalContainer>
     </Modal>

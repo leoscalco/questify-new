@@ -1,10 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
-
 import HomeScreen from '../screens/HomeScreen';
 import RewardsScreen from '../screens/RewardsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import { colors } from '../styles/theme';
 
 export type TabParamList = {
   Home: undefined;
@@ -14,15 +12,15 @@ export type TabParamList = {
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
-function TabNavigator() {
+function TabNavigator({ theme }: { theme: any }) {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: colors.secondary,
+          backgroundColor: theme.colors.secondary,
         },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.white,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.white,
       }}>
       <Tab.Screen
         name="Home"

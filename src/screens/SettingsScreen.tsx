@@ -3,6 +3,7 @@ import { Alert, Keyboard, FlatList, View } from 'react-native';
 import styled from 'styled-components/native';
 import useTimerStore from '../store/timerStore';
 import useBlockedAppsStore from '../store/blockedAppsStore';
+import useQuestStore from '../store/questStore';
 import StyledButton from '../components/StyledButton';
 
 const SettingsContainer = styled.View`
@@ -65,6 +66,9 @@ const Input = styled.TextInput`
 
 function SettingsScreen() {
   const { workDuration, breakDuration, setDurations } = useTimerStore();
+  const recalculatePomodoros = useQuestStore(
+    (state) => state.recalculatePomodoros
+  );
   const { blockedApps, addBlockedApp, removeBlockedApp } = useBlockedAppsStore();
   const [work, setWork] = useState(workDuration.toString());
   const [breakTime, setBreakTime] = useState(breakDuration.toString());
@@ -80,6 +84,7 @@ function SettingsScreen() {
     }
 
     setDurations(workMinutes, breakMinutes);
+    recalculatePomodoros(workMinutes);
     Alert.alert('Settings Saved', 'Your new durations have been saved.');
     Keyboard.dismiss();
   };

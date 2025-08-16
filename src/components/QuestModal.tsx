@@ -39,7 +39,7 @@ const Input = styled.TextInput`
 interface QuestModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (title: string, totalPomodoros: number) => void;
+  onSubmit: (title: string, duration: number) => void;
   questToEdit?: Quest | null;
 }
 
@@ -50,26 +50,26 @@ const QuestModal = ({
   questToEdit,
 }: QuestModalProps) => {
   const [title, setTitle] = useState('');
-  const [totalPomodoros, setTotalPomodoros] = useState('');
+  const [duration, setDuration] = useState('');
 
   useEffect(() => {
     if (questToEdit) {
       setTitle(questToEdit.title);
-      setTotalPomodoros(questToEdit.totalPomodoros.toString());
+      setDuration(questToEdit.duration.toString());
     } else {
       setTitle('');
-      setTotalPomodoros('');
+      setDuration('');
     }
   }, [questToEdit, visible]);
 
   const handleSubmit = () => {
-    onSubmit(title, parseInt(totalPomodoros, 10));
+    onSubmit(title, parseInt(duration, 10));
     onClose();
   };
 
   const handleClose = () => {
     setTitle('');
-    setTotalPomodoros('');
+    setDuration('');
     onClose();
   };
 
@@ -84,9 +84,9 @@ const QuestModal = ({
             onChangeText={setTitle}
           />
           <Input
-            placeholder="Total Pomodoros"
-            value={totalPomodoros}
-            onChangeText={setTotalPomodoros}
+            placeholder="Duration (minutes)"
+            value={duration}
+            onChangeText={setDuration}
             keyboardType="numeric"
           />
           <StyledButton

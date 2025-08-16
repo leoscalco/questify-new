@@ -94,7 +94,6 @@ const FocusBattle = () => {
         ) : (
           <StyledButton title="Pause" onPress={pauseTime} />
         )}
-        <StyledButton title="Reset" onPress={resetTime} />
       </ControlsContainer>
     </FocusBattleContainer>
   );

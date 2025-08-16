@@ -1,11 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
-import HomeScreen from '../screens/HomeScreen';
+import CharacterScreen from '../screens/CharacterScreen';
+import QuestsScreen from '../screens/QuestsScreen';
 import RewardsScreen from '../screens/RewardsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 export type TabParamList = {
   Home: undefined;
+  Quests: undefined;
   Rewards: undefined;
   Settings: undefined;
 };
@@ -24,11 +26,23 @@ function TabNavigator({ theme }: { theme: any }) {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={CharacterScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
               source={require('../assets/images/home-icon.png')}
+              style={{ width: size, height: size, tintColor: color }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Quests"
+        component={QuestsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={require('../assets/images/quest-icon.png')}
               style={{ width: size, height: size, tintColor: color }}
             />
           ),

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
 import useQuestStore, { Quest } from '../store/questStore';
+import useTimerStore from '../store/timerStore';
 import QuestModal from './QuestModal';
 import StyledButton from './StyledButton';
 
@@ -40,6 +42,10 @@ const QuestActions = styled.View`
   align-items: center;
 `;
 
+const IconButton = styled.TouchableOpacity`
+  padding: 8px;
+`;
+
 const QuestTitle = styled.Text`
   font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
@@ -57,11 +63,13 @@ const QuestItem = ({
   onEdit,
   onDelete,
   onStart,
+  onFinish,
 }: {
   quest: Quest;
   onEdit: () => void;
   onDelete: () => void;
   onStart: () => void;
+  onFinish: () => void;
 }) => (
   <QuestItemContainer>
     <QuestInfo>
@@ -71,9 +79,18 @@ const QuestItem = ({
       </QuestProgress>
     </QuestInfo>
     <QuestActions>
-      <StyledButton title="Start" onPress={onStart} />
-      <StyledButton title="Edit" onPress={onEdit} />
-      <StyledButton title="Delete" onPress={onDelete} />
+      <IconButton onPress={onStart}>
+        <Feather name="play" size={24} color="green" />
+      </IconButton>
+      <IconButton onPress={onEdit}>
+        <Feather name="edit" size={24} color="blue" />
+      </IconButton>
+      <IconButton onPress={onDelete}>
+        <Feather name="trash-2" size={24} color="red" />
+      </IconButton>
+      <IconButton onPress={onFinish}>
+        <Feather name="check-circle" size={24} color="green" />
+      </IconButton>
     </QuestActions>
   </QuestItemContainer>
 );
@@ -85,6 +102,8 @@ const QuestLog = () => {
   const editQuest = useQuestStore((state) => state.editQuest);
   const deleteQuest = useQuestStore((state) => state.deleteQuest);
   const setActiveQuest = useQuestStore((state) => state.setActiveQuest);
+  const markAsFinished = useQuestStore((state) => state.markAsFinished);
+  const { workDuration, resetTime } = useTimerStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [questToEdit, setQuestToEdit] = useState<Quest | null>(null);
 
@@ -98,11 +117,16 @@ const QuestLog = () => {
     setModalVisible(false);
   };
 
-  const handleSaveQuest = (title: string, totalPomodoros: number) => {
+  const handleSaveQuest = (title: string, duration: number) => {
     if (questToEdit) {
-      editQuest({ ...questToEdit, title, totalPomodoros });
+      editQuest({
+        ...questToEdit,
+        title,
+        duration,
+        totalPomodoros: Math.ceil(duration / workDuration),
+      });
     } else {
-      addQuest({ title, totalPomodoros });
+      addQuest({ title, duration });
     }
     handleCloseModal();
   };
@@ -113,6 +137,7 @@ const QuestLog = () => {
 
   const handleStartBattle = (quest: Quest) => {
     setActiveQuest(quest.id);
+    resetTime();
     navigation.navigate('FocusBattle', { quest });
   };
 
@@ -127,6 +152,7 @@ const QuestLog = () => {
             onEdit={() => handleOpenModal(item)}
             onDelete={() => handleDeleteQuest(item.id)}
             onStart={() => handleStartBattle(item)}
+            onFinish={() => markAsFinished(item.id)}
           />
         )}
         keyExtractor={(item) => item.id}

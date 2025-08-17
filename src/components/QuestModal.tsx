@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal } from 'react-native';
+import { Modal, Switch, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Quest } from '../store/questStore';
 import StyledButton from './StyledButton';
@@ -19,7 +19,7 @@ const ModalContent = styled.View`
 `;
 
 const Title = styled.Text`
-  font-family: ${(props) => props.theme.fonts.main};
+  font-family: ${(props) => props.theme.fonts.title};
   font-size: ${(props) => props.theme.fontSizes.large};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: ${(props) => props.theme.spacing.medium}px;
@@ -27,7 +27,6 @@ const Title = styled.Text`
 `;
 
 const Input = styled.TextInput`
-  font-family: ${(props) => props.theme.fonts.main};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.text};
   background-color: ${(props) => props.theme.colors.white};
@@ -39,7 +38,7 @@ const Input = styled.TextInput`
 interface QuestModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (title: string, duration: number) => void;
+  onSubmit: (title: string, duration: number, isHard: boolean) => void;
   questToEdit?: Quest | null;
 }
 
@@ -51,25 +50,29 @@ const QuestModal = ({
 }: QuestModalProps) => {
   const [title, setTitle] = useState('');
   const [duration, setDuration] = useState('');
+  const [isHard, setIsHard] = useState(false);
 
   useEffect(() => {
     if (questToEdit) {
       setTitle(questToEdit.title);
       setDuration(questToEdit.duration.toString());
+      setIsHard(questToEdit.isHard || false);
     } else {
       setTitle('');
       setDuration('');
+      setIsHard(false);
     }
   }, [questToEdit, visible]);
 
   const handleSubmit = () => {
-    onSubmit(title, parseInt(duration, 10));
+    onSubmit(title, parseInt(duration, 10), isHard);
     onClose();
   };
 
   const handleClose = () => {
     setTitle('');
     setDuration('');
+    setIsHard(false);
     onClose();
   };
 
@@ -89,6 +92,15 @@ const QuestModal = ({
             onChangeText={setDuration}
             keyboardType="numeric"
           />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 16,
+            }}>
+            <Switch value={isHard} onValueChange={setIsHard} />
+            <Title>Hard Mode</Title>
+          </View>
           <StyledButton
             title={questToEdit ? 'Save' : 'Add'}
             onPress={handleSubmit}

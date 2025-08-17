@@ -11,6 +11,7 @@ export interface Quest {
   goldReward?: number;
   createdAt: Date;
   finishedAt?: Date;
+  isHard?: boolean;
 }
 
 interface QuestState {
@@ -19,7 +20,10 @@ interface QuestState {
   activeQuestId: string | null;
   nextId: number;
   addQuest: (
-    quest: Omit<Quest, 'id' | 'completedPomodoros' | 'totalPomodoros' | 'createdAt'>
+    quest: Omit<
+      Quest,
+      'id' | 'completedPomodoros' | 'totalPomodoros' | 'createdAt'
+    >
   ) => void;
   editQuest: (quest: Quest) => void;
   deleteQuest: (id: string) => void;

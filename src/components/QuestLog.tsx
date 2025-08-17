@@ -41,7 +41,7 @@ const FinishedQuestsTitle = styled(Title)`
   margin-top: 32px;
 `;
 
-const QuestItemContainer = styled.View<{ finished?: boolean }>`
+const QuestItemContainer = styled.View<{ finished?: boolean; isHard?: boolean }>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -53,6 +53,8 @@ const QuestItemContainer = styled.View<{ finished?: boolean }>`
   border-radius: ${(props) => props.theme.borderRadius.small}px;
   margin-bottom: ${(props) => props.theme.spacing.small}px;
   overflow: hidden;
+  border-width: ${(props) => (props.isHard ? '2px' : '0px')};
+  border-color: ${(props) => props.theme.colors.danger};
 `;
 
 const MonsterBackground = styled.Image`
@@ -99,6 +101,13 @@ const QuestProgress = styled.Text`
   color: ${(props) => props.theme.colors.text};
 `;
 
+const BossTag = styled.Text`
+  font-family: ${(props) => props.theme.fonts.bold};
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.danger};
+  margin-top: 4px;
+`;
+
 const QuestDate = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.small};
   color: ${(props) => props.theme.colors.text};
@@ -109,6 +118,14 @@ const monsters = [
   require('../assets/images/monster1.png'),
   require('../assets/images/monster2.png'),
   require('../assets/images/monster3.png'),
+  require('../assets/images/monster4.png'),
+  require('../assets/images/monster5.png'),
+];
+
+const bosses = [
+  require('../assets/images/boss1.png'),
+  require('../assets/images/boss2.png'),
+  require('../assets/images/boss3.png'),
 ];
 
 const QuestItem = ({
@@ -128,15 +145,28 @@ const QuestItem = ({
   finished?: boolean;
   index: number;
 }) => (
-  <QuestItemContainer finished={finished}>
+  <QuestItemContainer finished={finished} isHard={quest.isHard}>
     {!finished && (
-      <MonsterBackground source={monsters[index % monsters.length]} />
+      <MonsterBackground
+        source={
+          quest.isHard
+            ? bosses[index % bosses.length]
+            : monsters[index % monsters.length]
+        }
+      />
     )}
     {finished && (
-      <FinishedMonsterBackground source={monsters[index % monsters.length]} />
+      <FinishedMonsterBackground
+        source={
+          quest.isHard
+            ? bosses[index % bosses.length]
+            : monsters[index % monsters.length]
+        }
+      />
     )}
     <QuestInfo>
       <QuestTitle>{quest.title}</QuestTitle>
+      {quest.isHard && <BossTag>Boss</BossTag>}
       {!finished && (
         <QuestDate>
           Added: {new Date(quest.createdAt).toLocaleDateString()}
@@ -212,16 +242,21 @@ const QuestLog = () => {
     setModalVisible(false);
   };
 
-  const handleSaveQuest = (title: string, duration: number) => {
+  const handleSaveQuest = (
+    title: string,
+    duration: number,
+    isHard: boolean
+  ) => {
     if (questToEdit) {
       editQuest({
         ...questToEdit,
         title,
         duration,
+        isHard,
         totalPomodoros: Math.ceil(duration / workDuration),
       });
     } else {
-      addQuest({ title, duration });
+      addQuest({ title, duration, isHard });
     }
     handleCloseModal();
   };

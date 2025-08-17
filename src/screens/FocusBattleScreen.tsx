@@ -14,12 +14,12 @@ const FocusBattleScreenContainer = styled.View`
 `;
 
 type FocusBattleScreenRouteProp = RouteProp<
-  { params: { quest: Quest } },
+  { params: { quest: Quest; monsterImage: any } },
   'params'
 >;
 
 type FocusBattleScreenNavigationProp = StackNavigationProp<
-  Record<string, { quest: Quest }>,
+  Record<string, { quest: Quest; monsterImage: any }>,
   'FocusBattle'
 >;
 
@@ -29,11 +29,11 @@ interface FocusBattleScreenProps {
 }
 
 const FocusBattleScreen: React.FC<FocusBattleScreenProps> = ({ route }) => {
-  const { quest } = route.params;
+  const { quest, monsterImage } = route.params;
 
   return (
     <FocusBattleScreenContainer>
-      <FocusBattle />
+      <FocusBattle monsterImage={monsterImage} />
     </FocusBattleScreenContainer>
   );
 };

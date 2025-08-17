@@ -39,7 +39,7 @@ const ControlsContainer = styled.View`
   width: 100%;
 `;
 
-const FocusBattle = () => {
+const FocusBattle = ({ monsterImage }: { monsterImage: any }) => {
   const {
     time,
     isActive,
@@ -85,7 +85,7 @@ const FocusBattle = () => {
   return (
     <FocusBattleContainer>
       <Title>{isWorkSession ? 'Focus Battle' : 'Break Time'}</Title>
-      <MonsterImage source={require('../assets/images/monster1.png')} />
+      <MonsterImage source={monsterImage} />
       <TimerText>{formatTime(time)}</TimerText>
       <ControlsContainer>
         {!isActive ? (

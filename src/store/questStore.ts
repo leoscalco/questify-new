@@ -12,6 +12,7 @@ export interface Quest {
   createdAt: Date;
   finishedAt?: Date;
   isHard?: boolean;
+  monsterImage: any;
 }
 
 interface QuestState {
@@ -50,6 +51,10 @@ const useQuestStore = create<QuestState>((set) => ({
             completedPomodoros: 0,
             totalPomodoros: Math.ceil(quest.duration / workDuration),
             createdAt: new Date(),
+            monsterImage:
+              quest.isHard
+                ? `boss${(state.nextId % 3) + 1}`
+                : `monster${(state.nextId % 5) + 1}`,
           },
         ],
         nextId: state.nextId + 1,
@@ -84,7 +89,7 @@ const useQuestStore = create<QuestState>((set) => ({
       const questToFinish = state.quests.find((q) => q.id === id);
       if (!questToFinish) return {};
 
-      const goldReward = questToFinish.duration * 2;
+      const goldReward = questToFinish.duration * 2 * (questToFinish.isHard ? 5 : 1);
       useCharacterStore.getState().gainGold(goldReward);
 
       const finishedQuest = {

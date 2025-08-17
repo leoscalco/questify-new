@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { View, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import useQuestStore, { Quest } from '../store/questStore';
 import useTimerStore from '../store/timerStore';
 import QuestModal from './QuestModal';
 import StyledButton from './StyledButton';
+import { monsters, bosses } from '../assets/monsters';
 
 const QuestLogContainer = styled.View`
   flex: 1;
@@ -114,20 +121,6 @@ const QuestDate = styled.Text`
   margin-top: 4px;
 `;
 
-const monsters = [
-  require('../assets/images/monster1.png'),
-  require('../assets/images/monster2.png'),
-  require('../assets/images/monster3.png'),
-  require('../assets/images/monster4.png'),
-  require('../assets/images/monster5.png'),
-];
-
-const bosses = [
-  require('../assets/images/boss1.png'),
-  require('../assets/images/boss2.png'),
-  require('../assets/images/boss3.png'),
-];
-
 const QuestItem = ({
   quest,
   onEdit,
@@ -150,8 +143,8 @@ const QuestItem = ({
       <MonsterBackground
         source={
           quest.isHard
-            ? bosses[index % bosses.length]
-            : monsters[index % monsters.length]
+            ? bosses[quest.monsterImage]
+            : monsters[quest.monsterImage]
         }
       />
     )}
@@ -159,8 +152,8 @@ const QuestItem = ({
       <FinishedMonsterBackground
         source={
           quest.isHard
-            ? bosses[index % bosses.length]
-            : monsters[index % monsters.length]
+            ? bosses[quest.monsterImage]
+            : monsters[quest.monsterImage]
         }
       />
     )}
@@ -268,7 +261,12 @@ const QuestLog = () => {
   const handleStartBattle = (quest: Quest) => {
     setActiveQuest(quest.id);
     resetTime();
-    navigation.navigate('FocusBattle', { quest });
+    navigation.navigate('FocusBattle', {
+      quest,
+      monsterImage: quest.isHard
+        ? bosses[quest.monsterImage]
+        : monsters[quest.monsterImage],
+    });
   };
 
   return (
@@ -292,6 +290,13 @@ const QuestLog = () => {
               />
             )}
             keyExtractor={(item) => item.id}
+            ListEmptyComponent={
+              <EmptyListContainer>
+                <EmptyListText>
+                  Click the button on top to add quests
+                </EmptyListText>
+              </EmptyListContainer>
+            }
           />
         </ListContainer>
         <FinishedQuestsTitle>Finished Quests</FinishedQuestsTitle>

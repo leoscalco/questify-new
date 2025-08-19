@@ -84,6 +84,13 @@ const QuestInfo = styled.View`
   flex: 1;
 `;
 
+const QuestStatsContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+`;
+
 const QuestActions = styled.View`
   flex-direction: row;
   align-items: center;
@@ -104,7 +111,7 @@ const QuestTitle = styled.Text`
 `;
 
 const QuestProgress = styled.Text`
-  font-size: ${(props) => props.theme.fontSizes.medium};
+  font-size: ${(props) => props.theme.fontSizes.small};
   color: ${(props) => props.theme.colors.text};
 `;
 
@@ -166,9 +173,14 @@ const QuestItem = ({
         </QuestDate>
       )}
       {!finished && (
-        <QuestProgress>
-          {quest.completedPomodoros}/{quest.totalPomodoros}
-        </QuestProgress>
+        <QuestStatsContainer>
+          <QuestProgress>
+            {quest.duration} minutes ({quest.totalPomodoros} periods)
+          </QuestProgress>
+          <QuestProgress>
+            {quest.completedPomodoros}/{quest.totalPomodoros}
+          </QuestProgress>
+        </QuestStatsContainer>
       )}
       {finished && quest.goldReward && (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

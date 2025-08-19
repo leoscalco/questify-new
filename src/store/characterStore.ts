@@ -21,7 +21,38 @@ interface CharacterState {
   gainXp: (amount: number) => void;
   gainGold: (amount: number) => void;
   spendGold: (amount: number) => void;
+  setName: (name: string) => void;
+  setGender: (gender: string) => void;
+  setClassType: (classType: string) => void;
+  setAge: (age: number) => void;
 }
+
+const statsByClass: Record<string, CharacterStats> = {
+  Warrior: {
+    strength: 10,
+    agility: 5,
+    intelligence: 3,
+    luck: 4,
+    dexterity: 6,
+    vitality: 12,
+  },
+  Mage: {
+    strength: 3,
+    agility: 6,
+    intelligence: 12,
+    luck: 5,
+    dexterity: 4,
+    vitality: 10,
+  },
+  Archer: {
+    strength: 5,
+    agility: 12,
+    intelligence: 4,
+    luck: 6,
+    dexterity: 10,
+    vitality: 8,
+  },
+};
 
 const useCharacterStore = create<CharacterState>((set) => ({
   name: 'Ordinary Hero',
@@ -31,14 +62,7 @@ const useCharacterStore = create<CharacterState>((set) => ({
   level: 1,
   xp: 0,
   gold: 0,
-  stats: {
-    strength: 10,
-    agility: 5,
-    intelligence: 3,
-    luck: 4,
-    dexterity: 6,
-    vitality: 12,
-  },
+  stats: statsByClass['Warrior'],
   gainXp: (amount) =>
     set((state) => {
       const newXp = state.xp + amount;
@@ -53,6 +77,11 @@ const useCharacterStore = create<CharacterState>((set) => ({
     set((state) => ({
       gold: state.gold - amount,
     })),
+  setName: (name) => set({ name }),
+  setGender: (gender) => set({ gender }),
+  setClassType: (classType) =>
+    set({ classType, stats: statsByClass[classType] }),
+  setAge: (age) => set({ age }),
 }));
 
 export default useCharacterStore;

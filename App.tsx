@@ -3,6 +3,8 @@ import { ThemeProvider } from './src/styles/ThemeProvider';
 import useAppBlocker from './src/hooks/useAppBlocker';
 import { useFonts } from 'expo-font';
 import { Text } from 'react-native';
+import useSetupStore from './src/store/setupStore';
+import SetupScreen from './src/screens/SetupScreen';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -11,6 +13,7 @@ export default function App() {
     'MedievalSharp-BookOblique': require('./src/assets/fonts/medieval_sharp/MedievalSharp-BookOblique.ttf'),
     'MedievalSharp-BoldOblique': require('./src/assets/fonts/medieval_sharp/MedievalSharp-BoldOblique.ttf'),
   });
+  const { isSetupComplete } = useSetupStore();
 
   useAppBlocker();
 
@@ -20,7 +23,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <AppNavigator />
+      {isSetupComplete ? <AppNavigator /> : <SetupScreen />}
     </ThemeProvider>
   );
 }
